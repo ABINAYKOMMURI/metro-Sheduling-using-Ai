@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>KMRL Train Induction – Phase 1</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <header class="app-header">
+        <div class="title-block">
+          <h1>KMRL Train Induction – Phase 1 Prototype</h1>
+          <p class="subtitle">
+            Nightly decision support: select 10 trains for service, enforce safety constraints, and explain every choice.
+          </p>
+        </div>
+
+        <nav class="nav-links">
+          <a href="{{ url_for('dashboard') }}"
+             class="{% if request.endpoint == 'dashboard' %}active{% endif %}">
+            Dashboard
+          </a>
+          <a href="{{ url_for('sandbox') }}"
+             class="{% if request.endpoint == 'sandbox' %}active{% endif %}">
+            What-if Sandbox
+          </a>
+        </nav>
+      </header>
+
+      <main>
+        {% block content %}{% endblock %}
+      </main>
+
+      <footer>
+        <p>Phase 1 prototype – synthetic data only. Ready for API integration in Phase 2.</p>
+      </footer>
+    </div>
+  </body>
+</html>

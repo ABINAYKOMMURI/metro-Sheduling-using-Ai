@@ -1,0 +1,242 @@
+Line,Station_No,Station_Name,Total_Stations
+Red Line,1,Shaheed Sthal (New Bus Adda),29
+Red Line,2,Hindon River,29
+Red Line,3,Arthala,29
+Red Line,4,Mohan Nagar,29
+Red Line,5,Shyam Park,29
+Red Line,6,Major Mohit Sharma Rajendra Nagar,29
+Red Line,7,Raj Bagh,29
+Red Line,8,Shaheed Nagar,29
+Red Line,9,Dilshad Garden,29
+Red Line,10,Jhilmil,29
+Red Line,11,Mansarovar Park,29
+Red Line,12,Shahdara,29
+Red Line,13,Welcome,29
+Red Line,14,Seelampur,29
+Red Line,15,Shastri Park,29
+Red Line,16,Kashmere Gate,29
+Red Line,17,Tis Hazari,29
+Red Line,18,Pul Bangash,29
+Red Line,19,Pratap Nagar,29
+Red Line,20,Shastri Nagar,29
+Red Line,21,Inderlok,29
+Red Line,22,Kanhaiya Nagar,29
+Red Line,23,Keshav Puram,29
+Red Line,24,Netaji Subhash Place,29
+Red Line,25,Kohat Enclave,29
+Red Line,26,Pitam Pura,29
+Red Line,27,Rohini East,29
+Red Line,28,Rohini West,29
+Red Line,29,Rithala,29
+Yellow Line,1,Samaypur Badli,37
+Yellow Line,2,"Rohini Sector 18,19",37
+Yellow Line,3,Haiderpur Badli Mor,37
+Yellow Line,4,Jahangirpuri,37
+Yellow Line,5,Adarsh Nagar,37
+Yellow Line,6,Azadpur,37
+Yellow Line,7,Model Town,37
+Yellow Line,8,GTB Nagar,37
+Yellow Line,9,Vishwavidyalaya,37
+Yellow Line,10,Vidhan Sabha,37
+Yellow Line,11,Civil Lines,37
+Yellow Line,12,Kashmere Gate,37
+Yellow Line,13,Chandni Chowk,37
+Yellow Line,14,Chawri Bazar,37
+Yellow Line,15,New Delhi,37
+Yellow Line,16,Rajiv Chowk,37
+Yellow Line,17,Patel Chowk,37
+Yellow Line,18,Central Secretariat,37
+Yellow Line,19,Udyog Bhawan,37
+Yellow Line,20,Lok Kalyan Marg,37
+Yellow Line,21,Jor Bagh,37
+Yellow Line,22,INA,37
+Yellow Line,23,AIIMS,37
+Yellow Line,24,Green Park,37
+Yellow Line,25,Hauz Khas,37
+Yellow Line,26,Malviya Nagar,37
+Yellow Line,27,Saket,37
+Yellow Line,28,Qutab Minar,37
+Yellow Line,29,Chhatarpur,37
+Yellow Line,30,Sultanpur,37
+Yellow Line,31,Ghitorni,37
+Yellow Line,32,Arjan Garh,37
+Yellow Line,33,Guru Dronacharya,37
+Yellow Line,34,Sikandarpur,37
+Yellow Line,35,MG Road,37
+Yellow Line,36,IFFCO Chowk,37
+Yellow Line,37,HUDA City Centre,37
+Blue Line,1,Dwarka Sector 21,47
+Blue Line,2,Dwarka Sector 8,47
+Blue Line,3,Dwarka Sector 9,47
+Blue Line,4,Dwarka Sector 10,47
+Blue Line,5,Dwarka Sector 11,47
+Blue Line,6,Dwarka Sector 12,47
+Blue Line,7,Dwarka Sector 13,47
+Blue Line,8,Dwarka Sector 14,47
+Blue Line,9,Dwarka,47
+Blue Line,10,Dwarka Mor,47
+Blue Line,11,Nawada,47
+Blue Line,12,Uttam Nagar West,47
+Blue Line,13,Uttam Nagar East,47
+Blue Line,14,Janakpuri West,47
+Blue Line,15,Janakpuri East,47
+Blue Line,16,Tilak Nagar,47
+Blue Line,17,Subhash Nagar,47
+Blue Line,18,Tagore Garden,47
+Blue Line,19,Rajouri Garden,47
+Blue Line,20,Ramesh Nagar,47
+Blue Line,21,Moti Nagar,47
+Blue Line,22,Kirti Nagar,47
+Blue Line,23,Shadipur,47
+Blue Line,24,Patel Nagar,47
+Blue Line,25,Rajendra Place,47
+Blue Line,26,Karol Bagh,47
+Blue Line,27,Jhandewalan,47
+Blue Line,28,Ramakrishna Ashram Marg,47
+Blue Line,29,Rajiv Chowk,47
+Blue Line,30,Barakhamba Road,47
+Blue Line,31,Mandi House,47
+Blue Line,32,Pragati Maidan,47
+Blue Line,33,Indraprastha,47
+Blue Line,34,Yamuna Bank,47
+Blue Line,35,Akshardham,47
+Blue Line,36,Mayur Vihar - I,47
+Blue Line,37,Mayur Vihar Extension,47
+Blue Line,38,New Ashok Nagar,47
+Blue Line,39,Noida Sector 15,47
+Blue Line,40,Noida Sector 16,47
+Blue Line,41,Noida Sector 18,47
+Blue Line,42,Botanical Garden,47
+Blue Line,43,Golf Course,47
+Blue Line,44,Noida City Centre,47
+Blue Line,45,Noida Sector 34,47
+Blue Line,46,Noida Sector 52,47
+Blue Line,47,Noida Electronic City,47
+Violet Line,1,Kashmere Gate,34
+Violet Line,2,Lal Quila,34
+Violet Line,3,Jama Masjid,34
+Violet Line,4,Delhi Gate,34
+Violet Line,5,ITO,34
+Violet Line,6,Mandi House,34
+Violet Line,7,Janpath,34
+Violet Line,8,Central Secretariat,34
+Violet Line,9,Khan Market,34
+Violet Line,10,JLN Stadium,34
+Violet Line,11,Jangpura,34
+Violet Line,12,Lajpat Nagar,34
+Violet Line,13,Moolchand,34
+Violet Line,14,Kailash Colony,34
+Violet Line,15,Nehru Place,34
+Violet Line,16,Kalkaji Mandir,34
+Violet Line,17,Govindpuri,34
+Violet Line,18,Harkesh Nagar Okhla,34
+Violet Line,19,Jasola Apollo,34
+Violet Line,20,Sarita Vihar,34
+Violet Line,21,Mohan Estate,34
+Violet Line,22,Tughlakabad,34
+Violet Line,23,Badarpur Border,34
+Violet Line,24,Sarai,34
+Violet Line,25,NHPC Chowk,34
+Violet Line,26,Mewala Maharajpur,34
+Violet Line,27,Sector 28,34
+Violet Line,28,Badkal Mor,34
+Violet Line,29,Old Faridabad,34
+Violet Line,30,Neelam Chowk Ajronda,34
+Violet Line,31,Bata Chowk,34
+Violet Line,32,Escorts Mujesar,34
+Violet Line,33,Sant Surdas (Sihi),34
+Violet Line,34,Raja Nahar Singh (Ballabhgarh),34
+Green Line,1,Inderlok,21
+Green Line,2,Ashok Park Main,21
+Green Line,3,Punjabi Bagh,21
+Green Line,4,Shivaji Park,21
+Green Line,5,Madipur,21
+Green Line,6,Paschim Vihar (East),21
+Green Line,7,Paschim Vihar (West),21
+Green Line,8,Peera Garhi,21
+Green Line,9,Udyog Nagar,21
+Green Line,10,Maharaja Surajmal Stadium,21
+Green Line,11,Nangloi,21
+Green Line,12,Nangloi Railway Station,21
+Green Line,13,Rajdhani Park,21
+Green Line,14,Mundka,21
+Green Line,15,Mundka Industrial Area,21
+Green Line,16,Ghevra,21
+Green Line,17,Tikri Kalan,21
+Green Line,18,Tikri Border,21
+Green Line,19,Pandit Shree Ram Sharma,21
+Green Line,20,Bahadurgarh City,21
+Green Line,21,Brigadier Hoshiyar Singh,21
+Magenta Line,1,Janakpuri West,25
+Magenta Line,2,Dabri Mor – Janakpuri South,25
+Magenta Line,3,Dashrathpuri,25
+Magenta Line,4,Palam,25
+Magenta Line,5,Sadar Bazaar Cantonment,25
+Magenta Line,6,Terminal 1-IGI Airport,25
+Magenta Line,7,Shankar Vihar,25
+Magenta Line,8,Vasant Vihar,25
+Magenta Line,9,Munirka,25
+Magenta Line,10,RK Puram,25
+Magenta Line,11,IIT Delhi,25
+Magenta Line,12,Hauz Khas,25
+Magenta Line,13,Panchsheel Park,25
+Magenta Line,14,Chirag Delhi,25
+Magenta Line,15,Greater Kailash,25
+Magenta Line,16,Nehru Enclave,25
+Magenta Line,17,Kalkaji Mandir,25
+Magenta Line,18,Okhla NSIC,25
+Magenta Line,19,Sukhdev Vihar,25
+Magenta Line,20,Jamia Millia Islamia,25
+Magenta Line,21,Okhla Vihar,25
+Magenta Line,22,Jasola Vihar Shaheen Bagh,25
+Magenta Line,23,Kalindi Kunj,25
+Magenta Line,24,Okhla Bird Sanctuary,25
+Magenta Line,25,Botanical Garden,25
+Pink Line,1,Majlis Park,38
+Pink Line,2,Azadpur,38
+Pink Line,3,Shalimar Bagh,38
+Pink Line,4,Netaji Subhash Place,38
+Pink Line,5,Shakurpur,38
+Pink Line,6,Punjabi Bagh West,38
+Pink Line,7,ESI Basaidarapur,38
+Pink Line,8,Rajouri Garden,38
+Pink Line,9,Mayapuri,38
+Pink Line,10,Naraina Vihar,38
+Pink Line,11,Delhi Cantt,38
+Pink Line,12,Durgabai Deshmukh South Campus,38
+Pink Line,13,Sir Vishweshwaraiah Moti Bagh,38
+Pink Line,14,Bhikaji Cama Place,38
+Pink Line,15,Sarojini Nagar,38
+Pink Line,16,INA,38
+Pink Line,17,South Extension,38
+Pink Line,18,Lajpat Nagar,38
+Pink Line,19,Vinobapuri,38
+Pink Line,20,Ashram,38
+Pink Line,21,Hazrat Nizamuddin,38
+Pink Line,22,Mayur Vihar Phase-I,38
+Pink Line,23,Mayur Vihar Pocket-I,38
+Pink Line,24,Trilokpuri Sanjay Lake,38
+Pink Line,25,Vinod Nagar East,38
+Pink Line,26,Mandawali – West Vinod Nagar,38
+Pink Line,27,IP Extension,38
+Pink Line,28,Anand Vihar,38
+Pink Line,29,Karkarduma,38
+Pink Line,30,Karkarduma Court,38
+Pink Line,31,Krishna Nagar,38
+Pink Line,32,East Azad Nagar,38
+Pink Line,33,Welcome,38
+Pink Line,34,Jaffrabad,38
+Pink Line,35,Maujpur – Babarpur,38
+Pink Line,36,Gokulpuri,38
+Pink Line,37,Johri Enclave,38
+Pink Line,38,Shiv Vihar,38
+Grey Line,1,Dwarka,4
+Grey Line,2,Nangli,4
+Grey Line,3,Najafgarh,4
+Grey Line,4,Dhansa Bus Stand,4
+Airport Express (Orange Line),1,New Delhi,6
+Airport Express (Orange Line),2,Shivaji Stadium,6
+Airport Express (Orange Line),3,Dhaula Kuan,6
+Airport Express (Orange Line),4,Delhi Aerocity,6
+Airport Express (Orange Line),5,IGI Airport,6
+Airport Express (Orange Line),6,Dwarka Sector 21,6

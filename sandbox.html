@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="card">
+  <div class="card-header">
+    <h2>What-if Sandbox – Single Train Simulation</h2>
+    <p class="card-subtitle">
+      Modify operational inputs and observe how the Hybrid (MCDA + ML) engine reacts in real time.
+    </p>
+  </div>
+
+  <form method="post" class="form-grid">
+
+    <!-- FITNESS -->
+    <div class="form-group">
+      <label>Fitness days remaining</label>
+      <input type="number"
+             name="fitness_days_remaining"
+             min="0"
+             max="120"
+             value="{{ default_inputs.fitness_days_remaining }}">
+      <small>≤3 days ⇒ hard reject</small>
+    </div>
+
+    <!-- JOB CARD -->
+    <div class="form-group">
+      <label>Job card status</label>
+      <select name="job_card_status">
+        {% for opt in ["CLEAR","MINOR","CRITICAL"] %}
+        <option value="{{ opt }}"
+        {% if default_inputs.job_card_status == opt %}selected{% endif %}>
+          {{ opt }}
+        </option>
+        {% endfor %}
+      </select>
+      <small>CRITICAL ⇒ auto reject</small>
+    </div>
+
+    <!-- MILEAGE (FIXED ✅) -->
+    <div class="form-group">
+      <label>Current mileage (km)</label>
+      <input type="number"
+             name="current_mileage_km"
+             min="1000"
+             max="300000"
+             step="1000"
+             value="{{ default_inputs.current_mileage_km }}">
+      <small>Lower mileage → lower risk</small>
+    </div>
+
+    <!-- BRANDING -->
+    <div class="form-group">
+      <label>Branding status</label>
+      <select name="branding_status">
+        {% for opt in ["NONE","LOW","MEDIUM","HIGH"] %}
+        <option value="{{ opt }}"
+        {% if default_inputs.branding_status == opt %}selected{% endif %}>
+          {{ opt }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- CLEANING -->
+    <div class="form-group">
+      <label>Cleaning status</label>
+      <select name="cleaning_status">
+        {% for opt in ["DONE","PENDING"] %}
+        <option value="{{ opt }}"
+        {% if default_inputs.cleaning_status == opt %}selected{% endif %}>
+          {{ opt }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- DEPOT -->
+    <div class="form-group">
+      <label>Depot track</label>
+      <select name="depot_track">
+        {% for opt in ["A1","A2","A3","A4","A5","A6","B1","B2","B3","B4","B5","B6"] %}
+        <option value="{{ opt }}"
+        {% if default_inputs.depot_track == opt %}selected{% endif %}>
+          {{ opt }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-primary">Run What-if</button>
+    </div>
+
+  </form>
+</section>
+
+
+{% if result %}
+<section class="card result-card">
+  <div class="card-header">
+    <h2>Hybrid Decision Result – Train <span class="badge">TXX</span></h2>
+  </div>
+
+  <div class="result-layout">
+
+    <!-- MAIN RESULT -->
+    <div class="result-main">
+
+      <p>
+        <strong>Status:</strong>
+
+        {% if result.hybrid_status == "HIGH PRIORITY" %}
+          <span class="status-pill ok">HIGH PRIORITY</span>
+        {% elif result.hybrid_status == "NORMAL" %}
+          <span class="status-pill neutral">NORMAL</span>
+        {% elif result.hybrid_status == "STANDBY" %}
+          <span class="status-pill warning">STANDBY</span>
+        {% else %}
+          <span class="status-pill bad">DEFER</span>
+        {% endif %}
+      </p>
+
+      <p class="total-score">
+        <strong>Final Hybrid Score:</strong>
+        {{ "%.1f"|format(result.final_hybrid_score) }} %
+      </p>
+
+      <!-- Explainability -->
+      <div style="margin-top:30px; padding:20px; background:#0f172a; border-radius:12px; border:1px solid #1e293b;">
+        <h3>AI Operational Explainability</h3>
+
+        {% set score = result.final_hybrid_score %}
+
+        {% if score < 50 %}
+          <p style="color:#ff4b4b;">🚫 Safety thresholds violated.</p>
+        {% elif score < 65 %}
+          <p>Moderate operational risk.</p>
+        {% elif score < 80 %}
+          <p>Stable condition with manageable risk.</p>
+        {% else %}
+          <p style="color:#4caf50;">High confidence & safe for induction.</p>
+        {% endif %}
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-wrapper">
+        <div class="progress-bar"
+             style="width: {{ result.final_hybrid_score }}%;">
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ML SIDE -->
+    <div class="result-sidebar">
+      <h3>ML Risk Analysis</h3>
+
+      <ul class="score-list">
+
+        <li>
+          <span>Breakdown Probability</span>
+          <span>
+            {{ "%.2f"|format(result.risk_probability) }}
+            <span class="risk-pill {{ result.breakdown_risk_band|lower }}">
+              {{ result.breakdown_risk_band }}
+            </span>
+          </span>
+        </li>
+
+        <li>
+          <span>Maintenance Probability</span>
+          <span>
+            {{ "%.2f"|format(result.maintenance_probability) }}
+            <span class="risk-pill {{ result.maintenance_risk_band|lower }}">
+              {{ result.maintenance_risk_band }}
+            </span>
+          </span>
+        </li>
+
+      </ul>
+
+      <!-- Confidence -->
+      <div class="confidence-section">
+        <h3>AI Model Confidence</h3>
+
+        <div class="gauge-container">
+          <div class="gauge-bar"
+               style="width: {{ result.confidence_score|default(75) }}%;">
+          </div>
+        </div>
+
+        <p>
+          Confidence Level:
+          <span class="status-pill ok">
+            {{ result.confidence_label|default("MEDIUM") }}
+          </span>
+          ({{ result.confidence_score|default(75) }}%)
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}

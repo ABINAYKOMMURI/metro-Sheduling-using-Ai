@@ -1,0 +1,11 @@
+Line,Trains,Suggested_Depot_Size,Example_Depot_Locations,Total_Suggested_Depot_Capacity,Depots_Needed_if_40cap_each,Depots_Needed_as_per_Suggested_Size
+Blue Line,78,1 Large + 1 Small,"Dwarka, Yamuna Bank",90,2,1
+Pink Line,63,1 Large + 1 Medium,"Mukundpur, Vinod Nagar",110,2,1
+Yellow Line,62,1 Large + 1 Medium,"Shastri Park, Sultanpur",110,2,1
+Violet Line,57,1 Large + 1 Small,"Keshopur, Faridabad",90,2,1
+Red Line,48,2 Medium,"Rithala, Shaheed Sthal",80,2,1
+Magenta Line,42,2 Medium,"Kalindi Kunj, Janakpuri",80,2,1
+Green Line,35,1 Medium,Mundka,40,1,1
+Airport Express (Orange Line),10,1 Small,Dwarka Sector 21,20,1,1
+Grey Line,5,1 Mini,Najafgarh,10,1,1
+Total,400,,,,15,9

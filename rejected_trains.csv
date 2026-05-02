@@ -1,0 +1,3 @@
+train_id,fitness_days_remaining,job_card_status,current_mileage_km,branding_contract_status,branding_penalty_risk_lakh,cleaning_status,depot_track,last_induction_date,total_score,status,rejection_reason,explanation,fitness_score,maintenance_score,mileage_score,branding_score,cleaning_score,depot_score
+T10,9,CRITICAL,127789,NONE,0.0,PENDING,A10,2025-11-16,0.0,REJECTED,Critical open job card (safety-critical defect),Auto-rejected due to safety/legal constraints.,44,0,80,50,30,100
+T19,80,CRITICAL,123799,NONE,0.0,DONE,B7,2025-11-11,0.0,REJECTED,Critical open job card (safety-critical defect),Auto-rejected due to safety/legal constraints.,98,0,80,50,100,0

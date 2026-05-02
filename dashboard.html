@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- ======================================= -->
+<!-- Fleet Overview -->
+<!-- ======================================= -->
+<section class="summary-grid">
+  <div class="card metric-card">
+    <div class="card-header">
+      <h2>Fleet Overview – Hybrid Decision Engine</h2>
+      <p class="card-subtitle">
+        MCDA (55%) + Breakdown Risk (25%) + Maintenance (20%) + SHAP Explainability
+      </p>
+    </div>
+
+    <div class="metric-row">
+      <div class="metric">
+        <span class="label">Fleet Size</span>
+        <span class="value">{{ metadata.fleet_size }}</span>
+      </div>
+
+      <div class="metric">
+        <span class="label">Eligible</span>
+        <span class="value success">{{ metadata.eligible_count }}</span>
+      </div>
+
+      <div class="metric">
+        <span class="label">Rejected</span>
+        <span class="value warning">{{ metadata.rejected_count }}</span>
+      </div>
+
+      <div class="metric">
+        <span class="label">Avg Mileage</span>
+        <span class="value">{{ "%.0f"|format(metadata.fleet_avg_mileage) }} km</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ======================================= -->
+<!-- TOP 10 -->
+<!-- ======================================= -->
+<section class="tables">
+
+  <div class="card card-table">
+    <div class="card-header">
+      <h2>Top 10 Trains – Hybrid Ranking</h2>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Train</th>
+            <th>Score</th>
+            <th>MCDA</th>
+            <th>Breakdown</th>
+            <th>Maintenance</th>
+            <th>Status</th>
+            <th>SHAP</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for row in top_trains %}
+          <tr>
+            <td>{{ row.hybrid_rank }}</td>
+            <td>{{ row.train_id }}</td>
+            <td><strong>{{ "%.1f"|format(row.final_hybrid_score) }}</strong></td>
+            <td>{{ "%.1f"|format(row.total_score) }}</td>
+            <td>{{ "%.2f"|format(row.breakdown_probability * 100) }}%</td>
+            <td>{{ "%.2f"|format(row.maintenance_probability * 100) }}%</td>
+
+            <td>
+              <span class="status-pill {{ row.hybrid_status|lower }}">
+                {{ row.hybrid_status }}
+              </span>
+            </td>
+
+            <td>{{ row.shap_explanation }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <!-- REJECTED -->
+  <div class="card card-table">
+    <div class="card-header">
+      <h2>Rejected Trains</h2>
+    </div>
+
+    {% if rejected_trains %}
+    <table>
+      <thead>
+        <tr>
+          <th>Train</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rejected_trains %}
+        <tr class="rejected">
+          <td>{{ row.train_id }}</td>
+          <td>{{ row.status }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+      <p style="padding:20px;">No rejected trains</p>
+    {% endif %}
+  </div>
+
+</section>
+
+
+
+
+<!-- ======================================= -->
+<!-- 📊 CHARTS -->
+<!-- ======================================= -->
+<section class="card">
+  <div class="card-header">
+    <h2>AI Analytics Dashboard</h2>
+  </div>
+
+  <div style="display:flex; gap:40px; justify-content:center; flex-wrap:wrap; padding:20px;">
+    <canvas id="barChart" width="400"></canvas>
+    <canvas id="pieChart" width="300"></canvas>
+  </div>
+</section>
+
+
+<!-- ======================================= -->
+<!-- SHAP -->
+<!-- ======================================= -->
+<section class="card">
+  <div class="card-header">
+    <h2>AI Explainability – SHAP</h2>
+  </div>
+
+  <div style="padding:20px;">
+    {{ shap_plot_html | safe }}
+  </div>
+</section>
+
+
+<!-- ======================================= -->
+<!-- 🔥 SAFE CHART.JS (NO REFRESH) -->
+<!-- ======================================= -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const barLabels = {{ bar_labels | default([]) | tojson }};
+const barValues = {{ bar_values | default([]) | tojson }};
+const pieLabels = {{ pie_labels | default([]) | tojson }};
+const pieValues = {{ pie_values | default([]) | tojson }};
+
+// BAR CHART
+if (barLabels.length > 0) {
+  new Chart(document.getElementById("barChart"), {
+    type: 'bar',
+    data: {
+      labels: barLabels,
+      datasets: [{
+        label: 'Hybrid Score',
+        data: barValues
+      }]
+    },
+    options: {
+      animation: {
+        duration: 1200
+      }
+    }
+  });
+}
+
+// PIE CHART
+if (pieLabels.length > 0) {
+  new Chart(document.getElementById("pieChart"), {
+    type: 'pie',
+    data: {
+      labels: pieLabels,
+      datasets: [{
+        data: pieValues
+      }]
+    },
+    options: {
+      animation: {
+        animateRotate: true
+      }
+    }
+  });
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delhi Metro Network Explorer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with Metro Line Accent Colors -->
+    <!-- Application Structure Plan: A dashboard-style SPA with a left-side navigation panel for line selection and a main content area for displaying an overview chart and detailed station lists. This structure separates controls from content for clarity. The user starts with a high-level summary (chart) and can drill down into specific lines, or use a global search for quick access. This is more user-friendly than a static, long-scrolling list. -->
+    <!-- Visualization & Content Choices: Report Info: Number of stations per line -> Goal: Compare -> Viz: Horizontal Bar Chart -> Interaction: Hover for tooltips, click to filter view -> Justification: Easily compare line lengths, provides an alternative navigation method. | Report Info: Station lists per line -> Goal: Organize/Inform -> Presentation: Clickable line buttons and a dynamic station list view -> Interaction: Click line button to show/hide stations, search bar to filter in real-time -> Justification: Allows users to focus on one line at a time and provides a powerful search tool for quick information retrieval. All visualizations use Chart.js on a Canvas element. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 500px;
+            }
+        }
+        .line-button {
+            transition: all 0.2s ease-in-out;
+        }
+        .line-button.active {
+            transform: translateX(4px);
+            font-weight: 600;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Delhi Metro Network Explorer</h1>
+            <p class="text-gray-600 mt-2">An interactive guide to the Delhi Metro lines and stations.</p>
+        </header>
+
+        <main class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+
+            <aside class="lg:col-span-1 bg-white p-6 rounded-xl shadow-lg">
+                <h2 class="text-xl font-semibold mb-4 border-b pb-2">Metro Lines</h2>
+                <div class="mb-4">
+                    <input type="text" id="stationSearch" placeholder="Search for a station..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <nav id="line-navigation" class="space-y-2">
+                </nav>
+            </aside>
+
+            <section class="lg:col-span-3 space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-center">
+                    <div class="bg-white p-6 rounded-xl shadow-lg">
+                        <h3 class="text-lg font-semibold text-gray-500">Total Lines</h3>
+                        <p id="total-lines" class="text-4xl font-bold text-blue-600"></p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg">
+                        <h3 class="text-lg font-semibold text-gray-500">Total Stations</h3>
+                        <p id="total-stations" class="text-4xl font-bold text-blue-600"></p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                     <h2 class="text-xl font-semibold mb-4 text-center">Number of Stations per Line</h2>
+                     <p class="text-sm text-gray-500 text-center mb-4">This chart provides a quick comparison of the size of each metro line. You can click on a bar in the chart or a line name on the left to view the detailed list of stations for that specific line.</p>
+                    <div class="chart-container">
+                        <canvas id="linesChart"></canvas>
+                    </div>
+                </div>
+
+                <div id="station-display" class="bg-white p-6 rounded-xl shadow-lg">
+                    <h2 id="display-title" class="text-2xl font-semibold mb-4">All Stations</h2>
+                    <p id="display-intro" class="text-gray-600 mb-4">This section displays the list of stations. Initially, it shows all stations across the network. Use the search bar or select a specific line from the navigation panel on the left to filter this list and explore the network in more detail.</p>
+                    <div id="station-list-container" class="max-h-[60vh] overflow-y-auto pr-2">
+                        <ul id="station-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        const metroData = {
+            "Red Line": {
+                color: "#EE352E",
+                stations: ["Shaheed Sthal", "Hindon River", "Arthala", "Mohan Nagar", "Shyam Park", "Major Mohit Sharma", "Raj Bagh", "Shaheed Nagar", "Dilshad Garden", "Jhilmil", "Mansarovar Park", "Shahdara", "Welcome", "Seelampur", "Shastri Park", "Kashmere Gate", "Tis Hazari", "Pul Bangash", "Pratap Nagar", "Shastri Nagar", "Inderlok", "Kanhaiya Nagar", "Keshav Puram", "Netaji Subhash Place", "Kohat Enclave", "Pitampura", "Rohini East", "Rohini West", "Rithala"]
+            },
+            "Yellow Line": {
+                color: "#FFD700",
+                stations: ["Samaypur Badli", "Rohini Sector 18, 19", "Haiderpur Badli Mor", "Jahangirpuri", "Adarsh Nagar", "Azadpur", "Model Town", "GTB Nagar", "Vishwavidyalaya", "Vidhan Sabha", "Civil Lines", "Kashmere Gate", "Chandni Chowk", "Chawri Bazar", "New Delhi", "Rajiv Chowk", "Patel Chowk", "Central Secretariat", "Udyog Bhawan", "Lok Kalyan Marg", "Jor Bagh", "Dilli Haat - INA", "AIIMS", "Green Park", "Hauz Khas", "Malviya Nagar", "Saket", "Qutab Minar", "Chhatarpur", "Sultanpur", "Ghitorni", "Arjan Garh", "Guru Dronacharya", "Sikandarpur", "MG Road", "IFFCO Chowk", "Millennium City Centre Gurugram"]
+            },
+            "Blue Line": {
+                color: "#369",
+                stations: ["Dwarka Sector 21", "Dwarka Sector 8", "Dwarka Sector 9", "Dwarka Sector 10", "Dwarka Sector 11", "Dwarka Sector 12", "Dwarka Sector 13", "Dwarka Sector 14", "Dwarka", "Dwarka Mor", "Nawada", "Uttam Nagar West", "Uttam Nagar East", "Janakpuri West", "Janakpuri East", "Tilak Nagar", "Subhash Nagar", "Tagore Garden", "Rajouri Garden", "Ramesh Nagar", "Moti Nagar", "Kirti Nagar", "Shadipur", "Patel Nagar", "Rajendra Place", "Karol Bagh", "Jhandewalan", "Ramakrishna Ashram Marg", "Rajiv Chowk", "Barakhamba Road", "Mandi House", "Supreme Court", "Indraprastha", "Yamuna Bank", "Akshardham", "Mayur Vihar Phase-1", "Mayur Vihar Extension", "New Ashok Nagar", "Noida Sector 15", "Noida Sector 16", "Noida Sector 18", "Botanical Garden", "Golf Course", "Noida City Centre", "Noida Sector 34", "Noida Sector 52", "Noida Sector 61", "Noida Sector 59", "Noida Sector 62", "Noida Electronic City"]
+            },
+            "Blue Line Branch": {
+                color: "#369",
+                stations: ["Yamuna Bank", "Laxmi Nagar", "Nirman Vihar", "Preet Vihar", "Karkardooma", "Anand Vihar", "Kaushambi", "Vaishali"]
+            },
+            "Green Line": {
+                color: "#5f9b3c",
+                stations: ["Inderlok", "Ashok Park Main", "Punjabi Bagh", "Punjabi Bagh West", "Shivaji Park", "Madipur", "Paschim Vihar East", "Paschim Vihar West", "Peera Garhi", "Udyog Nagar", "Surajmal Stadium", "Nangloi", "Nangloi Railway Station", "Rajdhani Park", "Mundka", "Mundka Industrial Area", "Ghevra", "Tikri Kalan", "Tikri Border", "Pandit Shree Ram Sharma", "Bahadurgarh City", "Brigadier Hoshiar Singh"]
+            },
+            "Green Line Branch": {
+                 color: "#5f9b3c",
+                 stations: ["Ashok Park Main", "Satguru Ram Singh Marg", "Kirti Nagar"]
+            },
+            "Violet Line": {
+                color: "#673ab7",
+                stations: ["Kashmere Gate", "Lal Qila", "Jama Masjid", "Delhi Gate", "ITO", "Mandi House", "Janpath", "Central Secretariat", "Khan Market", "Jawaharlal Nehru Stadium", "Jangpura", "Lajpat Nagar", "Moolchand", "Kailash Colony", "Nehru Place", "Kalkaji Mandir", "Govind Puri", "Okhla", "Jasola Apollo", "Sarita Vihar", "Mohan Estate", "Tughlakabad", "Badarpur Border", "Sarai", "NHPC Chowk", "Mewla Maharajpur", "Sector 28", "Badkhal Mor", "Old Faridabad", "Neelam Chowk Ajronda", "Bata Chowk", "Escorts Mujesar", "Sant Surdas (Sihi)", "Raja Nahar Singh"]
+            },
+            "Pink Line": {
+                color: "#d84a9c",
+                stations: ["Majlis Park", "Azadpur", "Shalimar Bagh", "Netaji Subhash Place", "Shakurpur", "Punjabi Bagh West", "ESI Hospital", "Rajouri Garden", "Maya Puri", "Naraina Vihar", "Delhi Cantonment", "Durgabai Deshmukh South Campus", "Sir Vishweshwaraiah Moti Bagh", "Bhikaji Cama Place", "Sarojini Nagar", "Dilli Haat - INA", "South Extension", "Lajpat Nagar", "Vinobapuri", "Ashram", "Hazrat Nizamuddin", "Mayur Vihar Phase-1", "Mayur Vihar Pocket 1", "Trilokpuri Sanjay Lake", "East Vinod Nagar - Mayur Vihar-II", "Mandawali - West Vinod Nagar", "IP Extension", "Anand Vihar", "Karkardooma", "Karkardooma Court", "Krishna Nagar", "East Azad Nagar", "Welcome", "Jaffrabad", "Maujpur - Babarpur", "Gokulpuri", "Johri Enclave", "Shiv Vihar"]
+            },
+            "Magenta Line": {
+                color: "#c4007a",
+                stations: ["Janakpuri West", "Dabri Mor - Janakpuri South", "Dashrath Puri", "Palam", "Sadar Bazaar Cantonment", "Terminal 1-IGI Airport", "Shankar Vihar", "Vasant Vihar", "Munirka", "RK Puram", "IIT", "Hauz Khas", "Panchsheel Park", "Chirag Delhi", "Greater Kailash", "Nehru Enclave", "Kalkaji Mandir", "Okhla NSIC", "Sukhdev Vihar", "Jamia Millia Islamia", "Okhla Vihar", "Jasola Vihar Shaheen Bagh", "Kalindi Kunj", "Okhla Bird Sanctuary", "Botanical Garden"]
+            },
+            "Grey Line": {
+                color: "#969696",
+                stations: ["Dwarka", "Nangli", "Najafgarh", "Dhansa Bus Stand"]
+            },
+            "Airport Express Line": {
+                color: "#f48c06",
+                stations: ["New Delhi", "Shivaji Stadium", "Dhaula Kuan", "Delhi Aerocity", "IGI Airport", "Dwarka Sector 21", "Yashobhoomi Dwarka Sector 25"]
+            }
+        };
+
+        let myChart;
+        let activeLine = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const lineNavigation = document.getElementById('line-navigation');
+            const totalLinesEl = document.getElementById('total-lines');
+            const totalStationsEl = document.getElementById('total-stations');
+            const stationSearch = document.getElementById('stationSearch');
+
+            const allLines = Object.keys(metroData);
+            const totalStations = allLines.reduce((acc, line) => acc + metroData[line].stations.length, 0);
+
+            totalLinesEl.textContent = allLines.length;
+            totalStationsEl.textContent = totalStations;
+            
+            const allStationsButton = document.createElement('button');
+            allStationsButton.textContent = 'All Lines';
+            allStationsButton.className = 'w-full text-left px-4 py-2 rounded-lg line-button active';
+            allStationsButton.style.borderLeft = '4px solid #3b82f6';
+            allStationsButton.style.backgroundColor = '#eff6ff';
+            allStationsButton.onclick = () => {
+                displayAllStations();
+                setActiveButton(allStationsButton);
+                activeLine = null;
+            };
+            lineNavigation.appendChild(allStationsButton);
+            
+            allLines.forEach(line => {
+                const button = document.createElement('button');
+                button.textContent = line;
+                button.className = 'w-full text-left px-4 py-2 rounded-lg line-button';
+                button.style.borderLeft = `4px solid ${metroData[line].color}`;
+                button.onclick = () => {
+                    displayStationsForLine(line);
+                    setActiveButton(button);
+                    activeLine = line;
+                };
+                lineNavigation.appendChild(button);
+            });
+            
+            stationSearch.addEventListener('input', (e) => {
+                filterStations(e.target.value);
+            });
+
+            createChart();
+            displayAllStations();
+        });
+
+        function setActiveButton(activeButton) {
+            document.querySelectorAll('#line-navigation .line-button').forEach(btn => {
+                btn.classList.remove('active');
+                btn.style.backgroundColor = 'transparent';
+                btn.style.color = '#1f2937';
+            });
+            activeButton.classList.add('active');
+            const color = activeButton.textContent === 'All Lines' ? '#eff6ff' : metroData[activeButton.textContent]?.color + '20';
+            activeButton.style.backgroundColor = color;
+        }
+
+        function displayStationsForLine(lineName) {
+            const stationList = document.getElementById('station-list');
+            const title = document.getElementById('display-title');
+            const intro = document.getElementById('display-intro');
+            stationList.innerHTML = '';
+            
+            title.textContent = `${lineName} Stations`;
+            intro.textContent = `Displaying all ${metroData[lineName].stations.length} stations on the ${lineName}. Use the search bar above to filter this list.`
+            
+            metroData[lineName].stations.forEach(station => {
+                const li = document.createElement('li');
+                li.className = 'p-3 bg-gray-50 rounded-md text-sm';
+                li.textContent = station;
+                stationList.appendChild(li);
+            });
+            document.getElementById('stationSearch').value = '';
+        }
+
+        function displayAllStations() {
+            const stationList = document.getElementById('station-list');
+            const title = document.getElementById('display-title');
+            const intro = document.getElementById('display-intro');
+            stationList.innerHTML = '';
+
+            title.textContent = 'All Stations';
+            intro.textContent = `This section displays all stations across the network. Use the search bar or select a specific line from the navigation panel on the left to filter this list and explore the network in more detail.`
+
+            Object.entries(metroData).forEach(([line, data]) => {
+                data.stations.forEach(station => {
+                    const li = document.createElement('li');
+                    li.className = 'p-3 bg-gray-50 rounded-md text-sm';
+                    li.innerHTML = `${station} <span class="block text-xs opacity-70" style="color:${data.color};">${line}</span>`;
+                    stationList.appendChild(li);
+                });
+            });
+            document.getElementById('stationSearch').value = '';
+            
+            const allStationsButton = document.querySelector('#line-navigation button');
+            if(allStationsButton) setActiveButton(allStationsButton);
+        }
+
+        function filterStations(searchTerm) {
+            const term = searchTerm.toLowerCase();
+            const stationList = document.getElementById('station-list');
+            stationList.innerHTML = '';
+            
+            if (activeLine) {
+                 metroData[activeLine].stations.forEach(station => {
+                    if (station.toLowerCase().includes(term)) {
+                        const li = document.createElement('li');
+                        li.className = 'p-3 bg-gray-50 rounded-md text-sm';
+                        li.textContent = station;
+                        stationList.appendChild(li);
+                    }
+                });
+            } else {
+                Object.entries(metroData).forEach(([line, data]) => {
+                    data.stations.forEach(station => {
+                        if (station.toLowerCase().includes(term)) {
+                            const li = document.createElement('li');
+                            li.className = 'p-3 bg-gray-50 rounded-md text-sm';
+                            li.innerHTML = `${station} <span class="block text-xs opacity-70" style="color:${data.color};">${line}</span>`;
+                            stationList.appendChild(li);
+                        }
+                    });
+                });
+            }
+        }
+
+        function createChart() {
+            const ctx = document.getElementById('linesChart').getContext('2d');
+            const lineLabels = Object.keys(metroData);
+            const stationCounts = lineLabels.map(line => metroData[line].stations.length);
+            const lineColors = lineLabels.map(line => metroData[line].color);
+
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: lineLabels,
+                    datasets: [{
+                        label: 'Number of Stations',
+                        data: stationCounts,
+                        backgroundColor: lineColors,
+                        borderColor: lineColors.map(color => color + 'B3'),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                             grid: {
+                                color: '#e5e7eb'
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                autoSkip: false
+                            },
+                             grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.dataset.label}: ${context.raw}`;
+                                }
+                            }
+                        }
+                    },
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+                            const chartElement = elements[0];
+                            const lineName = myChart.data.labels[chartElement.index];
+                            displayStationsForLine(lineName);
+                            activeLine = lineName;
+                            document.querySelectorAll('#line-navigation .line-button').forEach(btn => {
+                                if (btn.textContent === lineName) {
+                                    setActiveButton(btn);
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
